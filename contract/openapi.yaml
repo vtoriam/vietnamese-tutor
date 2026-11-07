@@ -1,1 +1,331 @@
-// test
+openapi: 3.1.0
+info:
+  title: Vietnamese Pronunciation Tutor API
+  version: 0.1.0
+  description: |
+    Contract between the React front end and the backend (audio processing,
+    PhoWhisper transcription, LLM feedback).
+
+    Flow:
+      1. Front end creates an anonymous session (POST /sessions).
+      2. For each recording, front end sends audio (POST /attempts) and gets an
+         attempt_id straight away (202).
+      3. Front end polls GET /attempts/{attempt_id} about once a second until
+         status is "done" or "failed". Front end gives up after 30 seconds.
+      4. A retry is just a new attempt for the same prompt_id.
+
+    Conventions:
+      - Scripted mode only for v1. The target text is sent with every attempt,
+        so the backend does not need its own copy of the script bank.
+      - word_index in feedback items counts words in target_text after
+        splitting on whitespace, starting at 0. Vietnamese syllables are
+        written as separate words, so one index is one syllable.
+      - No numeric score is returned on purpose.
+      - Audio is not retained by default (ethics still to be confirmed).
+
+servers:
+  - url: http://localhost:8000
+    description: Local backend (dev)
+
+tags:
+  - name: sessions
+  - name: attempts
+
+paths:
+  /sessions:
+    post:
+      tags: [sessions]
+      summary: Start an anonymous session
+      operationId: createSession
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /attempts:
+    post:
+      tags: [attempts]
+      summary: Submit one recording for assessment
+      description: |
+        Returns immediately. Processing runs in the background; poll
+        GET /attempts/{attempt_id} for the result. Problems that can only be
+        found after audio processing (silence, too short, too long) are
+        reported as a "failed" attempt with an error code, not as an HTTP error.
+      operationId: createAttempt
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/AttemptRequest"
+      responses:
+        "202":
+          description: Attempt accepted and queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttemptCreated"
+        "400":
+          description: Missing or invalid field
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Unknown session_id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "413":
+          description: Audio file too large
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "415":
+          description: Unsupported audio format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /attempts/{attempt_id}:
+    get:
+      tags: [attempts]
+      summary: Get the status and result of an attempt
+      operationId: getAttempt
+      parameters:
+        - name: attempt_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current state of the attempt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attempt"
+        "404":
+          description: Unknown attempt_id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+components:
+  responses:
+    ServerError:
+      description: Unexpected server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Session:
+      type: object
+      required: [session_id, created_at]
+      properties:
+        session_id:
+          type: string
+          description: Anonymous session identifier
+          examples: ["sess_7f3a9c"]
+        created_at:
+          type: string
+          format: date-time
+
+    Unit:
+      type: string
+      enum: [phrase, sentence]
+      description: Size of the practice item
+
+    AttemptRequest:
+      type: object
+      required: [session_id, prompt_id, target_text, unit, audio]
+      properties:
+        session_id:
+          type: string
+        prompt_id:
+          type: string
+          description: Id of the item in the front end script bank
+          examples: ["p_003"]
+        target_text:
+          type: string
+          description: The Vietnamese text the learner is meant to say
+          examples: ["Tôi muốn ăn phở"]
+        unit:
+          $ref: "#/components/schemas/Unit"
+        dialect:
+          type: string
+          enum: [north]
+          default: north
+          description: Only the northern dialect is in scope for v1
+        feedback_language:
+          type: string
+          enum: [en]
+          default: en
+          description: Language of the explanations. English only for v1
+        audio:
+          type: string
+          format: binary
+          description: Recording or uploaded clip (for example webm, wav, mp3, m4a)
+
+    AttemptCreated:
+      type: object
+      required: [attempt_id, status]
+      properties:
+        attempt_id:
+          type: string
+          examples: ["att_91c2de"]
+        status:
+          $ref: "#/components/schemas/Status"
+
+    Status:
+      type: string
+      enum: [uploading, transcribing, analysing, done, failed]
+      description: |
+        Moves forward in this order. "done" and "failed" are final.
+
+    Attempt:
+      type: object
+      required: [attempt_id, session_id, prompt_id, status, created_at]
+      properties:
+        attempt_id:
+          type: string
+        session_id:
+          type: string
+        prompt_id:
+          type: string
+        status:
+          $ref: "#/components/schemas/Status"
+        created_at:
+          type: string
+          format: date-time
+        transcript:
+          type: [string, "null"]
+          description: |
+            What the speech recogniser heard. Null until transcribing finishes.
+            Not guaranteed to match the learner's real pronunciation, because
+            the recogniser may correct mistakes.
+        feedback:
+          oneOf:
+            - $ref: "#/components/schemas/Feedback"
+            - type: "null"
+          description: Present only when status is "done"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/AttemptError"
+            - type: "null"
+          description: Present only when status is "failed"
+
+    Feedback:
+      type: object
+      required: [summary, items]
+      properties:
+        summary:
+          type: string
+          description: Short plain-English summary for the learner. No score.
+          examples:
+            ["Good effort. Watch the tone on 'phở' and the start of 'muốn'."]
+        items:
+          type: array
+          description: Word-level points. Empty array means no problems were found.
+          items:
+            $ref: "#/components/schemas/FeedbackItem"
+        acoustic:
+          oneOf:
+            - $ref: "#/components/schemas/Acoustic"
+            - type: "null"
+          description: Reserved for a later version. Front end hides it when null.
+
+    FeedbackItem:
+      type: object
+      required: [word_index, expected, category, explanation, tip]
+      properties:
+        word_index:
+          type: integer
+          minimum: 0
+          description: Position of the word in target_text split on whitespace
+        expected:
+          type: string
+          examples: ["phở"]
+        heard:
+          type: [string, "null"]
+          description: What was heard for that word. Null if nothing matched.
+          examples: ["pho"]
+        category:
+          type: string
+          enum: [tone, initial_consonant, final_consonant, other]
+        explanation:
+          type: string
+          description: Why this is a problem, in English
+        tip:
+          type: string
+          description: One concrete thing to try on the next attempt
+        estimated_from_transcript:
+          type: boolean
+          default: true
+          description: |
+            True while feedback comes from the transcript only. Front end shows
+            an "estimated from transcript" label. Becomes false once acoustic
+            analysis backs the item.
+
+    Acoustic:
+      type: object
+      description: Reserved for the next version (pitch contour chart)
+      properties:
+        learner_contour:
+          $ref: "#/components/schemas/Contour"
+        reference_contour:
+          $ref: "#/components/schemas/Contour"
+
+    Contour:
+      type: array
+      description: |
+        Points of [t, semitones]. t runs from 0 to 1 across the syllable or
+        phrase. Semitones are relative to the speaker's own mean pitch, so
+        different voices can be compared.
+      items:
+        type: array
+        items:
+          type: number
+        minItems: 2
+        maxItems: 2
+
+    AttemptError:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum:
+            - NO_SPEECH_DETECTED
+            - AUDIO_TOO_SHORT
+            - AUDIO_TOO_LONG
+            - TRANSCRIPTION_FAILED
+            - ANALYSIS_FAILED
+            - INTERNAL_ERROR
+        message:
+          type: string
+          description: Plain message the front end can show
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
