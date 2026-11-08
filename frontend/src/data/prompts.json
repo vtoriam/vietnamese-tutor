@@ -1,0 +1,62 @@
+[
+  {
+    "id": "p_001",
+    "vietnamese": "ăn phở",
+    "english": "to eat pho",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_002",
+    "vietnamese": "Xin chào",
+    "english": "Hello",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_003",
+    "vietnamese": "Cảm ơn",
+    "english": "Thank you",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_004",
+    "vietnamese": "Tạm biệt",
+    "english": "Goodbye",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_005",
+    "vietnamese": "Rất vui được gặp bạn",
+    "english": "Nice to meet you",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_006",
+    "vietnamese": "Một ly cà phê",
+    "english": "One coffee",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_007",
+    "vietnamese": "Bao nhiêu tiền?",
+    "english": "How much is it?",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_008",
+    "vietnamese": "Tôi là sinh viên",
+    "english": "I am a student",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_009",
+    "vietnamese": "Chúc ngủ ngon",
+    "english": "Sleep well",
+    "unit": "phrase"
+  },
+  {
+    "id": "p_010",
+    "vietnamese": "Tôi không hiểu",
+    "english": "I do not understand",
+    "unit": "phrase"
+  }
+]
