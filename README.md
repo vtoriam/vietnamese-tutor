@@ -52,4 +52,4 @@ The current word bank starts with the six tones on one syllable: `ma` (ghost), `
 
 ## Known limitations
 
-Single-word clips may give poor or invented transcripts. This is being tested.
+Single-word clips may give poor or invented transcripts.
