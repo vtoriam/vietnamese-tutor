@@ -2,7 +2,7 @@
 
 ## 1. Prerequisites
 
-- Node.js: TODO. The repository has no `engines` field or `.nvmrc`.
+- Node.js 24.14.1, or another version matching the `>=22.12.0` engine range. Run `nvm use` if you use nvm.
 - npm.
 
 ## 2. Install and run
@@ -127,7 +127,13 @@ A Vietnamese speaker must check the text before the study.
 
 ## 11. Testing on a phone
 
-Microphone access needs HTTPS except on `localhost`. The repo does not configure Vite HTTPS or a tunnel. TODO: choose and document the team's approved HTTPS tunnel or Vite HTTPS setup, then open that HTTPS URL on the phone.
+Microphone access needs HTTPS except on `localhost`. Start the frontend, then run the Cloudflare quick tunnel from `frontend/`:
+
+```powershell
+npx cloudflared tunnel --url http://localhost:5173
+```
+
+Open the HTTPS URL printed by `cloudflared` on the phone. Vite allows `*.trycloudflare.com` hosts through `server.allowedHosts` in `vite.config.ts`.
 
 ## 12. Browser support and known limitations
 
@@ -143,6 +149,7 @@ Microphone access needs HTTPS except on `localhost`. The repo does not configure
 |---|---|
 | Microphone is blocked | Allow microphone access in browser settings, then retry. |
 | CORS error | Configure the backend to allow the Vite development origin. |
+| Blocked request. This host is not allowed | Use the `*.trycloudflare.com` URL printed by `cloudflared` and confirm `server.allowedHosts` includes `.trycloudflare.com` in `vite.config.ts`. |
 | Mocks do not start because the worker is missing | Run `npx msw init public --save`, then restart Vite. |
 | Types are out of date | Run `npm run gen:api` from `frontend/`. |
 | No Vietnamese voice | Use a browser/device with a `vi` speech-synthesis voice; the button is intentionally hidden otherwise. |
