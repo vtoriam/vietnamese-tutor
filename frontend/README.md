@@ -62,6 +62,8 @@ npm run dev
 
 The expected default backend address from the contract is `http://localhost:8000`. The backend must allow CORS from the Vite development origin.
 
+When opening the frontend on a phone, `localhost` means the phone itself. Therefore, a real backend at `http://localhost:8000` will not be reachable from the phone; expose the backend separately and use its HTTPS tunnel URL for `VITE_API_BASE_URL`.
+
 ## 6. npm scripts
 
 | Script | Purpose |
@@ -130,10 +132,18 @@ A Vietnamese speaker must check the text before the study.
 Microphone access needs HTTPS except on `localhost`. Start the frontend, then run the Cloudflare quick tunnel from `frontend/`:
 
 ```powershell
-npx cloudflared tunnel --url http://localhost:5173
+$env:VITE_USE_MOCKS="true"
+npm run dev
+```
+
+In a second terminal, from `frontend/`, run:
+
+```powershell
+npx cloudflared tunnel --url http://127.0.0.1:5173
 ```
 
 Open the HTTPS URL printed by `cloudflared` on the phone. Vite allows `*.trycloudflare.com` hosts through `server.allowedHosts` in `vite.config.ts`.
+With mocks enabled, no backend tunnel is needed because MSW intercepts the API requests in the browser. The mock scenario can be selected by adding `?mock=success` or another scenario to the Cloudflare URL.
 
 ## 12. Browser support and known limitations
 
@@ -149,6 +159,7 @@ Open the HTTPS URL printed by `cloudflared` on the phone. Vite allows `*.tryclou
 |---|---|
 | Microphone is blocked | Allow microphone access in browser settings, then retry. |
 | CORS error | Configure the backend to allow the Vite development origin. |
+| Session start says “Could not start the session” on a phone | Enable mocks, or set `VITE_API_BASE_URL` to an HTTPS tunnel for the backend. Do not use `localhost:8000` from the phone. |
 | Blocked request. This host is not allowed | Use the `*.trycloudflare.com` URL printed by `cloudflared` and confirm `server.allowedHosts` includes `.trycloudflare.com` in `vite.config.ts`. |
 | Mocks do not start because the worker is missing | Run `npx msw init public --save`, then restart Vite. |
 | Types are out of date | Run `npm run gen:api` from `frontend/`. |
