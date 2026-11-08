@@ -75,10 +75,10 @@ export interface components {
             created_at: string;
         };
         /**
-         * @description Size of the practice item
+         * @description Size of the practice item. v1 testing uses word.
          * @enum {string}
          */
-        Unit: "phrase" | "sentence";
+        Unit: "word" | "phrase" | "sentence";
         AttemptRequest: {
             session_id: string;
             /**
@@ -180,7 +180,7 @@ export interface components {
         };
         /**
          * @description Points of [t, semitones]. t runs from 0 to 1 across the syllable or
-         *     phrase. Semitones are relative to the speaker's own mean pitch, so
+         *     practice item. Semitones are relative to the speaker's own mean pitch, so
          *     different voices can be compared.
          */
         Contour: number[][];

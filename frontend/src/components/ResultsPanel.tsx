@@ -5,6 +5,7 @@ import type { components } from "@/api/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { unitLabel, type Unit } from "@/lib/unitLabel";
 
 type Feedback = components["schemas"]["Feedback"];
 type FeedbackItem = components["schemas"]["FeedbackItem"];
@@ -15,7 +16,8 @@ type ResultsPanelProps = {
   attemptNumber: number;
   previousAttempts: Attempt[];
   onTryAgain: () => void;
-  onNextPhrase: () => void;
+  onNextUnit: () => void;
+  unit: Unit;
 };
 
 const categoryLabels: Record<FeedbackItem["category"], string> = {
@@ -99,7 +101,8 @@ export function ResultsPanel({
   attemptNumber,
   previousAttempts,
   onTryAgain,
-  onNextPhrase,
+  onNextUnit,
+  unit,
 }: ResultsPanelProps) {
   const feedback: Feedback = attempt.feedback ?? { summary: "Recording checked.", items: [] };
   const targetWords = targetText.split(/\s+/).filter(Boolean);
@@ -112,7 +115,7 @@ export function ResultsPanel({
           <p className="eyebrow">Attempt {attemptNumber}</p>
           <h1 id="results-heading">Results</h1>
         </div>
-        <span>Practice</span>
+        <span>{unitLabel(unit)}</span>
       </div>
 
       <div className="results-comparison">
@@ -150,8 +153,8 @@ export function ResultsPanel({
         <Button type="button" onClick={onTryAgain}>
           Try again
         </Button>
-        <Button type="button" variant="outline" onClick={onNextPhrase}>
-          Next phrase
+        <Button type="button" variant="outline" onClick={onNextUnit}>
+          Next {unitLabel(unit)}
         </Button>
       </div>
       <AttemptHistory attempts={previousAttempts} />

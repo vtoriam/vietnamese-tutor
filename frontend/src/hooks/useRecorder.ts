@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { MAX_RECORDING_DURATION_MS, MIN_RECORDING_DURATION_MS } from "@/lib/recording";
 
 export type RecorderStatus = "idle" | "recording" | "recorded" | "submitting" | "error";
 export type RecorderError = "mic_blocked" | "too_short" | "unsupported";
@@ -15,9 +16,6 @@ type UseRecorderResult = {
   setSubmitting: (submitting: boolean) => void;
   handleFile: (file: File | null) => void;
 };
-
-const MAX_DURATION_MS = 15_000;
-const MIN_DURATION_MS = 500;
 
 function chooseMimeType(): string | undefined {
   if (typeof MediaRecorder === "undefined") {
@@ -64,11 +62,11 @@ export function useRecorder(): UseRecorderResult {
   const finishRecording = useCallback(() => {
     const startedAt = startedAtRef.current;
     const duration = startedAt === null ? 0 : Date.now() - startedAt;
-    setElapsedMs(Math.min(duration, MAX_DURATION_MS));
+    setElapsedMs(Math.min(duration, MAX_RECORDING_DURATION_MS));
     clearTimer();
     releaseStream();
 
-    if (duration < MIN_DURATION_MS) {
+    if (duration < MIN_RECORDING_DURATION_MS) {
       chunksRef.current = [];
       setError("too_short");
       setStatus("error");
@@ -125,8 +123,8 @@ export function useRecorder(): UseRecorderResult {
       timerRef.current = window.setInterval(() => {
         const startedAt = startedAtRef.current ?? Date.now();
         const nextElapsed = Date.now() - startedAt;
-        setElapsedMs(Math.min(nextElapsed, MAX_DURATION_MS));
-        if (nextElapsed >= MAX_DURATION_MS) {
+        setElapsedMs(Math.min(nextElapsed, MAX_RECORDING_DURATION_MS));
+        if (nextElapsed >= MAX_RECORDING_DURATION_MS) {
           stop();
         }
       }, 100);

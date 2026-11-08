@@ -66,7 +66,7 @@ function App() {
   };
 
   if (step === "start") {
-    return <StartScreen onBegin={handleBegin} isStarting={isStarting} startError={startError} />;
+    return <StartScreen onBegin={handleBegin} isStarting={isStarting} startError={startError} unit={prompt.unit} />;
   }
 
   if (step === "end") {
@@ -100,7 +100,8 @@ function App() {
             attemptNumber={promptAttempts.length}
             previousAttempts={previousAttempts}
             onTryAgain={attempt.reset}
-            onNextPhrase={handleNextPrompt}
+            onNextUnit={handleNextPrompt}
+            unit={prompt.unit}
           />
         ) : (
           <>
@@ -109,8 +110,8 @@ function App() {
               <ProgressValue />
             </Progress>
             <PromptCard key={prompt.id} prompt={prompt} />
-            <Recorder key={`${prompt.id}-${promptAttempts.length}`} onSend={handleSend} submissionStatus={submissionStatus} />
-            {attempt.error ? <ErrorState code={attempt.error.code} onRetry={attempt.reset} /> : null}
+            <Recorder key={`${prompt.id}-${promptAttempts.length}`} onSend={handleSend} submissionStatus={submissionStatus} unit={prompt.unit} />
+            {attempt.error ? <ErrorState code={attempt.error.code} onRetry={attempt.reset} unit={prompt.unit} /> : null}
           </>
         )}
       </section>

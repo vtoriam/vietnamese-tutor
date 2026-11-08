@@ -1,2 +1,2 @@
-// A Vietnamese speaker must check these prompts before the study.
+// A Vietnamese speaker must check the words and meanings before the study.
 export {};

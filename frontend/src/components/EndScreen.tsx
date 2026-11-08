@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import type { Attempt } from "@/api/client";
 import type { Prompt } from "@/components/PromptCard";
+import { unitLabel } from "@/lib/unitLabel";
 
 type EndScreenProps = {
   prompts: Prompt[];
@@ -17,8 +18,8 @@ export function EndScreen({ prompts, attempts, onPracticeAgain }: EndScreenProps
     <main className="stage-one">
       <section className="setup-card end-card" aria-labelledby="end-heading">
         <p className="eyebrow">Complete</p>
-        <h1 id="end-heading">Practice complete</h1>
-        <p className="intro">Here is a summary of your practice attempts.</p>
+        <h1 id="end-heading">{unitLabel(prompts[0].unit).replace(/^./, (letter) => letter.toUpperCase())} practice complete</h1>
+        <p className="intro">Here is a summary of your {unitLabel(prompts[0].unit)} practice attempts.</p>
         <div className="end-summary-list">
           {prompts.map((prompt) => {
             const promptAttempts = attempts.filter((attempt) => attempt.prompt_id === prompt.id);
@@ -26,7 +27,7 @@ export function EndScreen({ prompts, attempts, onPracticeAgain }: EndScreenProps
             return (
               <div className="end-summary-row" key={prompt.id}>
                 <div>
-                  <strong>{prompt.vietnamese}</strong>
+                  <strong>{unitLabel(prompt.unit).replace(/^./, (letter) => letter.toUpperCase())}: {prompt.vietnamese}</strong>
                   <span>{latest?.feedback?.summary ?? "No attempt yet."}</span>
                 </div>
                 <span>{promptAttempts.length} {promptAttempts.length === 1 ? "try" : "tries"}</span>

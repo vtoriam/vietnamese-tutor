@@ -2,12 +2,12 @@ Vietnamese Pronunciation Tutor: Front End Design Summary
 
 1. Purpose
 
-A web interface where a learner records themselves saying a Vietnamese phrase or sentence, and receives short, constructive English feedback on their pronunciation. The backend (built separately) transcribes the audio with PhoWhisper and uses an LLM to analyse the result. This front end is the research instrument for the LLM-as-tutor study described in our literature review.
+A web interface where a learner records themselves saying a Vietnamese practice item, and receives short, constructive English feedback on their pronunciation. The backend (built separately) transcribes the audio with PhoWhisper and uses an LLM to analyse the result. This front end is the research instrument for the LLM-as-tutor study described in our literature review.
 
 2. Scope and justification
    Decision Justification
-   Scripted prompts only The app shows a target phrase, so the backend can compare the target with what was heard. Free speech has no target, which makes error detection unreliable. Section 5 of the review also calls for the same test data across experiments to keep comparisons fair. With under a month, free speech is listed as future work.
-   Phrases and sentences Each script item has a unit field (phrase or sentence), so the backend can change later without a UI rewrite.
+   Scripted prompts only The app shows a target practice item, so the backend can compare the target with what was heard. Free speech has no target, which makes error detection unreliable. Section 5 of the review also calls for the same test data across experiments to keep comparisons fair. With under a month, free speech is listed as future work.
+   Practice units Each script item has a unit field, so the backend can change the item size later without a UI rewrite.
    Phonetics and intonation only Nguyen & Nguyen [7] identify this as the area learners find hardest. It also suits an audio-based tool better than grammar or writing.
    North dialect only Matches the study’s setting. We will note this as a limitation in the report.
    English feedback The learners are foreign speakers of Vietnamese. A feedback_language parameter keeps this changeable.

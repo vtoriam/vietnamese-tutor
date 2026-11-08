@@ -1,10 +1,10 @@
 # Vietnamese Tutor
 
-Vietnamese Tutor is a web app where a learner records a Vietnamese phrase and gets short English pronunciation feedback. The backend uses PhoWhisper for transcription and an LLM for analysis. It is part of a university study on LLMs as Vietnamese tutors.
+Vietnamese Tutor is a web app where a learner records a Vietnamese word and gets short English pronunciation feedback. The backend uses PhoWhisper for transcription and an LLM for analysis. It is part of a university study on LLMs as Vietnamese tutors.
 
 ## Current scope
 
-- Scripted phrases only; Northern dialect only.
+- Scripted words for current testing; Northern dialect only.
 - Phonetics only: tones, initial consonants, and final consonants.
 - English feedback; no numeric score.
 - Deferred: pitch contour chart, recorded model audio, free speech mode, data logging, and ethics/consent text.
@@ -43,3 +43,13 @@ Keep `main` working. Use short feature branches such as `feat/recorder`, then op
 ## Privacy
 
 Never commit audio recordings, `.env` files, or model weights. Audio is not stored until ethics approval settles the data policy.
+
+## Script bank
+
+Each prompt has `id`, `vietnamese`, `english`, and `unit` fields. The `unit` can be `word`, `phrase`, or `sentence`; switching between units is a data change in `frontend/src/data/prompts.json`.
+
+The current word bank starts with the six tones on one syllable: `ma` (ghost), `má` (cheek), `mà` (but), `mả` (tomb), `mã` (horse), and `mạ` (rice seedling). It also includes `phở` (pho noodle soup), `cơm` (cooked rice), `giá` (price), and `chào` (hello). A Vietnamese speaker must check the words and meanings before the study.
+
+## Known limitations
+
+Single-word clips may give poor or invented transcripts. This is being tested.

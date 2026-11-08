@@ -91,7 +91,7 @@ To change the contract:
 The user flow is:
 
 ```text
-Start -> Practice -> Results -> next phrase ... -> End
+Start -> Practice -> Results -> next word ... -> End
 ```
 
 For each recording, the frontend:
@@ -121,9 +121,11 @@ src/
 Edit [`src/data/prompts.json`](./src/data/prompts.json). Each item has:
 
 - `id`: unique prompt ID.
-- `vietnamese`: target phrase.
+- `vietnamese`: target word, phrase, or sentence.
 - `english`: English meaning.
-- `unit`: `phrase` or `sentence`.
+- `unit`: `word`, `phrase`, or `sentence`. Switching between units is a data change in `src/data/prompts.json`.
+
+The current script bank uses these six tone words together and in order: `ma` (ghost), `má` (cheek), `mà` (but), `mả` (tomb), `mã` (horse), and `mạ` (rice seedling). It also includes `phở` (pho noodle soup), `cơm` (cooked rice), `giá` (price), and `chào` (hello). A Vietnamese speaker must check the words and meanings before the study.
 
 A Vietnamese speaker must check the text before the study.
 
@@ -151,7 +153,7 @@ With mocks enabled, no backend tunnel is needed because MSW intercepts the API r
 - Some devices have no Vietnamese speech-synthesis voice. The “Hear correct pronunciation” button is hidden then.
 - Synthetic voice tones may be imperfect.
 - Feedback is estimated from the transcript only, so speech recognition may “fix” mistakes.
-- Very short clips may produce poor transcripts.
+- Single-word clips may give poor or invented transcripts. This is being tested.
 
 ## 13. Troubleshooting
 

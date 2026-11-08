@@ -1,13 +1,15 @@
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { unitLabel, type Unit } from "@/lib/unitLabel";
 
 type ErrorStateProps = {
   code: string;
   onRetry: () => void;
+  unit: Unit;
 };
 
-const errorMessages: Record<string, { message: string; action: string }> = {
+const errorMessages: Record<string, { message: string | ((unit: Unit) => string); action: string }> = {
   MIC_BLOCKED: {
     message: "Microphone access is blocked. Allow it in your browser settings, then try again.",
     action: "Try again",
@@ -17,7 +19,7 @@ const errorMessages: Record<string, { message: string; action: string }> = {
     action: "Record again",
   },
   AUDIO_TOO_SHORT: {
-    message: "That recording was too short. Say the whole phrase.",
+    message: (unit) => `That recording was too short. Say the whole ${unitLabel(unit)}.`,
     action: "Record again",
   },
   AUDIO_TOO_LONG: {
@@ -50,14 +52,15 @@ const errorMessages: Record<string, { message: string; action: string }> = {
   },
 };
 
-export function ErrorState({ code, onRetry }: ErrorStateProps) {
+export function ErrorState({ code, onRetry, unit }: ErrorStateProps) {
   const content = errorMessages[code] ?? errorMessages.INTERNAL_ERROR;
+  const message = typeof content.message === "function" ? content.message(unit) : content.message;
 
   return (
     <Alert variant="destructive" className="error-state">
       <AlertCircle />
       <AlertTitle>We could not check that recording</AlertTitle>
-      <AlertDescription>{content.message}</AlertDescription>
+      <AlertDescription>{message}</AlertDescription>
       <Button type="button" variant="outline" onClick={onRetry}>
         {content.action}
       </Button>

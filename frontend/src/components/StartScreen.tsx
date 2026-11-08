@@ -1,14 +1,16 @@
 import { Mic } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { unitPluralLabel, type Unit } from "@/lib/unitLabel";
 
 type StartScreenProps = {
   onBegin: () => Promise<void>;
   isStarting: boolean;
   startError: string | null;
+  unit: Unit;
 };
 
-export function StartScreen({ onBegin, isStarting, startError }: StartScreenProps) {
+export function StartScreen({ onBegin, isStarting, startError, unit }: StartScreenProps) {
   const [micStatus, setMicStatus] = useState<"Not tested" | "Mic works">("Not tested");
   const [micTesting, setMicTesting] = useState(false);
 
@@ -31,7 +33,7 @@ export function StartScreen({ onBegin, isStarting, startError }: StartScreenProp
       <section className="setup-card" aria-labelledby="setup-heading">
         <p className="eyebrow">Vietnamese pronunciation tutor</p>
         <h1 id="setup-heading">Practice Vietnamese pronunciation</h1>
-        <p className="intro">Record yourself saying short Vietnamese phrases. You will get brief feedback in English.</p>
+        <p className="intro">Record yourself saying {unitPluralLabel(unit)}. You will get brief feedback in English.</p>
         <div className="before-start-card">
           <strong>Before you start</strong>
           <p>Find a quiet room. Use headphones so the model voice is not picked up by your microphone.</p>

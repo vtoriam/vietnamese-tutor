@@ -1,62 +1,62 @@
 [
   {
     "id": "p_001",
-    "vietnamese": "ăn phở",
-    "english": "to eat pho",
-    "unit": "phrase"
+    "vietnamese": "ma",
+    "english": "ghost",
+    "unit": "word"
   },
   {
     "id": "p_002",
-    "vietnamese": "Xin chào",
-    "english": "Hello",
-    "unit": "phrase"
+    "vietnamese": "má",
+    "english": "cheek",
+    "unit": "word"
   },
   {
     "id": "p_003",
-    "vietnamese": "Cảm ơn",
-    "english": "Thank you",
-    "unit": "phrase"
+    "vietnamese": "mà",
+    "english": "but",
+    "unit": "word"
   },
   {
     "id": "p_004",
-    "vietnamese": "Tạm biệt",
-    "english": "Goodbye",
-    "unit": "phrase"
+    "vietnamese": "mả",
+    "english": "tomb",
+    "unit": "word"
   },
   {
     "id": "p_005",
-    "vietnamese": "Rất vui được gặp bạn",
-    "english": "Nice to meet you",
-    "unit": "phrase"
+    "vietnamese": "mã",
+    "english": "horse",
+    "unit": "word"
   },
   {
     "id": "p_006",
-    "vietnamese": "Một ly cà phê",
-    "english": "One coffee",
-    "unit": "phrase"
+    "vietnamese": "mạ",
+    "english": "rice seedling",
+    "unit": "word"
   },
   {
     "id": "p_007",
-    "vietnamese": "Bao nhiêu tiền?",
-    "english": "How much is it?",
-    "unit": "phrase"
+    "vietnamese": "phở",
+    "english": "pho noodle soup",
+    "unit": "word"
   },
   {
     "id": "p_008",
-    "vietnamese": "Tôi là sinh viên",
-    "english": "I am a student",
-    "unit": "phrase"
+    "vietnamese": "cơm",
+    "english": "cooked rice",
+    "unit": "word"
   },
   {
     "id": "p_009",
-    "vietnamese": "Chúc ngủ ngon",
-    "english": "Sleep well",
-    "unit": "phrase"
+    "vietnamese": "giá",
+    "english": "price",
+    "unit": "word"
   },
   {
     "id": "p_010",
-    "vietnamese": "Tôi không hiểu",
-    "english": "I do not understand",
-    "unit": "phrase"
+    "vietnamese": "chào",
+    "english": "hello",
+    "unit": "word"
   }
 ]

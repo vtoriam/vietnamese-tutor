@@ -1,0 +1,2 @@
+export const MAX_RECORDING_DURATION_MS = 15_000;
+export const MIN_RECORDING_DURATION_MS = 500;

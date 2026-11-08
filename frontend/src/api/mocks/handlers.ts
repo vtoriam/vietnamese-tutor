@@ -1,5 +1,6 @@
 import { http, HttpResponse } from "msw";
 import type { components } from "../types";
+import { isUnit } from "@/lib/unitLabel";
 
 type Attempt = components["schemas"]["Attempt"];
 type Scenario =
@@ -17,6 +18,8 @@ type FailureScenario = Exclude<Scenario, "success" | "success_no_issues" | "slow
 type MockAttempt = {
   attempt: Attempt;
   scenario: Scenario;
+  targetText: string;
+  unit: components["schemas"]["Unit"];
 };
 
 const attempts = new Map<string, MockAttempt>();
@@ -75,11 +78,11 @@ function getFeedback(scenario: Scenario): components["schemas"]["Feedback"] {
     summary: "Good effort. Watch the tone on “phở”.",
     items: [
       {
-        word_index: 1,
+        word_index: 0,
         expected: "phở",
         heard: "pho",
         category: "tone",
-        explanation: "“phở” has a dipping tone: the pitch falls, then rises.",
+        explanation: "“pho” has a flat tone, while “phở” has a dipping tone.",
         tip: "Start mid, dip down, then lift at the end, like a short question.",
         estimated_from_transcript: true,
       },
@@ -116,7 +119,7 @@ function getAttemptState(mockAttempt: MockAttempt): Attempt {
   return {
     ...mockAttempt.attempt,
     status: "done",
-    transcript: "ăn pho",
+    transcript: scenario === "success" ? "pho" : mockAttempt.targetText,
     feedback: getFeedback(scenario),
   };
 }
@@ -146,8 +149,15 @@ export const handlers = [
     const sessionId = formData.get("session_id");
     const promptId = formData.get("prompt_id");
     const targetText = formData.get("target_text");
+    const unit = formData.get("unit");
 
-    if (typeof sessionId !== "string" || typeof promptId !== "string" || typeof targetText !== "string") {
+    if (
+      typeof sessionId !== "string" ||
+      typeof promptId !== "string" ||
+      typeof targetText !== "string" ||
+      typeof unit !== "string" ||
+      !isUnit(unit)
+    ) {
       return HttpResponse.json<components["schemas"]["AttemptCreated"] | components["schemas"]["Error"]>(
         { code: "INVALID_REQUEST", message: "Missing required attempt fields." },
         { status: 400 },
@@ -158,6 +168,8 @@ export const handlers = [
     const attemptId = `att_mock_${attemptNumber}`;
     attempts.set(attemptId, {
       scenario,
+      targetText,
+      unit,
       attempt: {
         attempt_id: attemptId,
         session_id: sessionId,
