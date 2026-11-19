@@ -23,7 +23,7 @@ const errorMessages: Record<string, { message: string | ((unit: Unit) => string)
     action: "Record again",
   },
   AUDIO_TOO_LONG: {
-    message: "That recording was too long. Keep it under 15 seconds.",
+    message: "That recording was too long. Keep it under 5 seconds.",
     action: "Record again",
   },
   NETWORK_ERROR: {
