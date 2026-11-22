@@ -12,6 +12,11 @@ NOT TESTED against the real API. Check parameter names in the Anthropic docs.
 import argparse
 import json
 import unicodedata
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).with_name(".env"))
 
 LLM_MODEL = "claude-sonnet-5-5"   # check the Anthropic model list for a pinned snapshot id
 EFFORT = "low"                    # low / medium / high / xhigh / max; choose in the pilot
