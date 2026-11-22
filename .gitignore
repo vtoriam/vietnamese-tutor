@@ -1,2 +1,6 @@
 .venv/
 backend/test_audio/
+backend/.env
+backend/.venv/
+backend/.env
+backend/.venv/
