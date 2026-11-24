@@ -49,3 +49,16 @@ Verify the installation:
 ```text
 ffmpeg -version
 ```
+
+## Run the API
+
+From the repository root:
+
+```powershell
+Set-Location backend
+uvicorn api:app --reload --host 0.0.0.0 --port 8000
+```
+
+The API exposes `POST /sessions`, `POST /attempts`, and `GET /attempts/{attempt_id}`.
+It accepts browser WebM/MP4 or WAV uploads, converts them to 16 kHz mono WAV with
+FFmpeg, and runs PhoWhisper transcription and the feedback analyser.

@@ -1,4 +1,5 @@
 import type { components } from "./types";
+import { convertBlobToWav } from "@/lib/recording";
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "http://localhost:8000";
 
@@ -28,9 +29,10 @@ export class ApiError extends Error {
 async function parseResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = (await response.json().catch(() => null)) as components["schemas"]["Error"] | null;
+    const detail = body as (components["schemas"]["Error"] & { detail?: components["schemas"]["Error"] }) | null;
     throw new ApiError(
-      body?.message ?? `Request failed with status ${response.status}`,
-      body?.code ?? "NETWORK_ERROR",
+      detail?.detail?.message ?? detail?.message ?? `Request failed with status ${response.status}`,
+      detail?.detail?.code ?? detail?.code ?? "NETWORK_ERROR",
       response.status,
     );
   }
@@ -44,6 +46,7 @@ export async function createSession(): Promise<Session> {
 }
 
 export async function createAttempt(request: AttemptRequest): Promise<AttemptCreated> {
+  const wavAudio = await convertBlobToWav(request.audio).catch(() => request.audio);
   const formData = new FormData();
   formData.append("session_id", request.session_id);
   formData.append("prompt_id", request.prompt_id);
@@ -51,7 +54,7 @@ export async function createAttempt(request: AttemptRequest): Promise<AttemptCre
   formData.append("unit", request.unit);
   formData.append("dialect", request.dialect);
   formData.append("feedback_language", request.feedback_language);
-  formData.append("audio", request.audio, "recording.webm");
+  formData.append("audio", wavAudio, "recording.wav");
 
   const response = await fetch(`${apiBaseUrl}/attempts`, {
     method: "POST",
