@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/audio/{prompt_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the reference recording for a prompt */
+        get: operations["getPromptAudio"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sessions": {
         parameters: {
             query?: never;
@@ -213,6 +230,37 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getPromptAudio: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                prompt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Prompt reference recording */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "audio/mp4": string;
+                };
+            };
+            /** @description Unknown prompt or unavailable audio recording */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     createSession: {
         parameters: {
             query?: never;

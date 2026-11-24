@@ -45,6 +45,10 @@ export async function createSession(): Promise<Session> {
   return parseResponse<Session>(response);
 }
 
+export function getPromptAudioUrl(promptId: string): string {
+  return `${apiBaseUrl}/audio/${encodeURIComponent(promptId)}`;
+}
+
 export async function createAttempt(request: AttemptRequest): Promise<AttemptCreated> {
   const wavAudio = await convertBlobToWav(request.audio).catch(() => request.audio);
   const formData = new FormData();

@@ -30,8 +30,35 @@ servers:
 tags:
   - name: sessions
   - name: attempts
+  - name: audio
 
 paths:
+  /audio/{prompt_id}:
+    get:
+      tags: [audio]
+      summary: Get the reference recording for a prompt
+      operationId: getPromptAudio
+      parameters:
+        - name: prompt_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Prompt reference recording
+          content:
+            audio/mp4:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Unknown prompt or unavailable audio recording
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /sessions:
     post:
       tags: [sessions]

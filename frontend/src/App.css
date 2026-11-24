@@ -435,6 +435,14 @@
   gap: 6px;
 }
 
+.target-word-row {
+  align-items: center;
+}
+
+.target-audio {
+  width: min(100%, 220px);
+}
+
 .word-chip {
   display: inline-flex;
   min-height: 36px;
@@ -490,17 +498,6 @@
   color: var(--foreground);
 }
 
-.hear-button {
-  width: 100%;
-  min-height: 44px;
-  margin-top: 16px;
-}
-
-.hear-button svg {
-  width: 16px;
-}
-
-.synthetic-note,
 .estimated-label {
   font-size: 0.75rem;
 }

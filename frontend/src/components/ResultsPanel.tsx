@@ -1,10 +1,9 @@
-import { ChevronDown, ChevronUp, Play } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import type { Attempt } from "@/api/client";
 import type { components } from "@/api/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import { unitLabel, type Unit } from "@/lib/unitLabel";
 
 type Feedback = components["schemas"]["Feedback"];
@@ -13,6 +12,7 @@ type FeedbackItem = components["schemas"]["FeedbackItem"];
 type ResultsPanelProps = {
   attempt: Attempt;
   targetText: string;
+  audioUrl: string;
   attemptNumber: number;
   previousAttempts: Attempt[];
   onTryAgain: () => void;
@@ -40,8 +40,6 @@ function WordChip({ highlighted, children }: { highlighted: boolean; children: s
 }
 
 function FeedbackCard({ item }: { item: FeedbackItem }) {
-  const { canSpeak, speak } = useSpeechSynthesis();
-
   return (
     <article className="feedback-card">
       <div className="feedback-title">
@@ -55,15 +53,6 @@ function FeedbackCard({ item }: { item: FeedbackItem }) {
       <p className="feedback-tip">
         <strong>Tip:</strong> {item.tip}
       </p>
-      {canSpeak ? (
-        <>
-          <Button type="button" variant="outline" className="hear-button" onClick={() => speak(item.expected)}>
-            <Play />
-            Hear correct pronunciation
-          </Button>
-          <p className="synthetic-note">Synthetic voice. Tones may sound imperfect.</p>
-        </>
-      ) : null}
       {item.estimated_from_transcript ? <p className="estimated-label">Estimated from transcript</p> : null}
     </article>
   );
@@ -98,6 +87,7 @@ function AttemptHistory({ attempts }: { attempts: Attempt[] }) {
 export function ResultsPanel({
   attempt,
   targetText,
+  audioUrl,
   attemptNumber,
   previousAttempts,
   onTryAgain,
@@ -121,12 +111,19 @@ export function ResultsPanel({
       <div className="results-comparison">
         <div>
           <span className="results-label">Target</span>
-          <div className="word-row">
+          <div className="word-row target-word-row">
             {targetWords.map((word, index) => (
               <WordChip key={`${word}-${index}`} highlighted={isHighlightedTarget(index, feedback.items)}>
                 {word}
               </WordChip>
             ))}
+            <audio
+              className="target-audio"
+              controls
+              preload="none"
+              src={audioUrl}
+              aria-label={`Reference audio for ${targetText}`}
+            />
           </div>
         </div>
         <div>

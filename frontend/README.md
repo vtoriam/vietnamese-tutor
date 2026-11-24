@@ -110,7 +110,7 @@ src/
   assets/       Static application assets
   components/   Start, practice, recorder, results, end, error, and UI components
   data/         Script bank
-  hooks/        Recorder, attempt polling, and speech synthesis hooks
+  hooks/        Recorder and attempt polling hooks
   lib/          Shared utilities
   App.tsx       Main flow and screen state
   main.tsx      App bootstrap and optional MSW startup
@@ -145,13 +145,15 @@ npx cloudflared tunnel --url http://127.0.0.1:5173
 ```
 
 Open the HTTPS URL printed by `cloudflared` on the phone. Vite allows `*.trycloudflare.com` hosts through `server.allowedHosts` in `vite.config.ts`.
-With mocks enabled, no backend tunnel is needed because MSW intercepts the API requests in the browser. The mock scenario can be selected by adding `?mock=success` or another scenario to the Cloudflare URL.
+With mocks enabled, no backend tunnel is needed for practice and feedback, but
+reference audio playback requires the backend to be reachable from the phone.
+Set `VITE_API_BASE_URL` to the backend's HTTPS tunnel URL. The mock scenario can
+be selected by adding `?mock=success` or another scenario to the Cloudflare URL.
 
 ## 12. Browser support and known limitations
 
 - Chrome recordings normally use WebM/Opus; Safari uses MP4 when supported.
-- Some devices have no Vietnamese speech-synthesis voice. The “Hear correct pronunciation” button is hidden then.
-- Synthetic voice tones may be imperfect.
+- Reference audio is served by the backend and requires its `Audio/` prompt recordings.
 - Feedback is estimated from the transcript only, so speech recognition may “fix” mistakes.
 - Single-word clips may give poor or invented transcripts. This is being tested.
 
@@ -165,13 +167,12 @@ With mocks enabled, no backend tunnel is needed because MSW intercepts the API r
 | Blocked request. This host is not allowed | Use the `*.trycloudflare.com` URL printed by `cloudflared` and confirm `server.allowedHosts` includes `.trycloudflare.com` in `vite.config.ts`. |
 | Mocks do not start because the worker is missing | Run `npx msw init public --save`, then restart Vite. |
 | Types are out of date | Run `npm run gen:api` from `frontend/`. |
-| No Vietnamese voice | Use a browser/device with a `vi` speech-synthesis voice; the button is intentionally hidden otherwise. |
 
 ## 14. Backend teammate notes
 
 The backend must provide:
 
-- `POST /sessions`, `POST /attempts`, and `GET /attempts/{attempt_id}`.
+- `POST /sessions`, `POST /attempts`, `GET /attempts/{attempt_id}`, and `GET /audio/{prompt_id}`.
 - Multipart fields: `session_id`, `prompt_id`, `target_text`, `unit`, `dialect`, `feedback_language`, and `audio`.
 - Status values: `uploading`, `transcribing`, `analysing`, `done`, and `failed`.
 - Contract error codes for no speech, length errors, transcription failure, analysis failure, and internal errors.

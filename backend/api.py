@@ -8,12 +8,21 @@ from threading import Lock
 
 from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from feedback import find_differences
 
 MAX_AUDIO_BYTES = 10 * 1024 * 1024
 MIN_DURATION_SECONDS = 0.5
 MAX_DURATION_SECONDS = 5.0
+AUDIO_DIRECTORY = Path(__file__).parent / "Audio"
+AUDIO_FILES = {
+    "pilot_001": "xinchao.m4a",
+    "pilot_002": "bankhoekhong.m4a",
+    "pilot_004": "xinloi.m4a",
+    "pilot_010": "Oigioioi.m4a",
+    "pilot_011": "dungroi.m4a",
+}
 
 app = FastAPI(title="Vietnamese Pronunciation Tutor API")
 app.add_middleware(
@@ -155,6 +164,19 @@ async def create_session():
     session = {"session_id": session_id, "created_at": utc_now()}
     sessions[session_id] = session
     return session
+
+
+@app.get("/audio/{prompt_id}")
+async def get_prompt_audio(prompt_id: str):
+    filename = AUDIO_FILES.get(prompt_id)
+    if filename is None:
+        raise HTTPException(status_code=404, detail={"code": "NOT_FOUND", "message": "Audio not found"})
+
+    audio_path = AUDIO_DIRECTORY / filename
+    if not audio_path.is_file():
+        raise HTTPException(status_code=404, detail={"code": "NOT_FOUND", "message": "Audio file not found"})
+
+    return FileResponse(audio_path, media_type="audio/mp4")
 
 
 @app.post("/attempts", status_code=202)

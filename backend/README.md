@@ -59,6 +59,7 @@ Set-Location backend
 uvicorn api:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The API exposes `POST /sessions`, `POST /attempts`, and `GET /attempts/{attempt_id}`.
+The API exposes `POST /sessions`, `POST /attempts`, `GET /attempts/{attempt_id}`,
+and `GET /audio/{prompt_id}` for the matching reference recording in `Audio/`.
 It accepts browser WebM/MP4 or WAV uploads, converts them to 16 kHz mono WAV with
 FFmpeg, and runs PhoWhisper transcription and the feedback analyser.

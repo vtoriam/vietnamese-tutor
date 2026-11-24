@@ -7,7 +7,7 @@ Vietnamese Tutor is a web app where a learner records a Vietnamese word and gets
 - Scripted words for current testing; Northern dialect only.
 - Phonetics only: tones, initial consonants, and final consonants.
 - English feedback; no numeric score.
-- Deferred: pitch contour chart, recorded model audio, free speech mode, data logging, and ethics/consent text.
+- Deferred: pitch contour chart, free speech mode, data logging, and ethics/consent text.
 
 ## Repository layout
 

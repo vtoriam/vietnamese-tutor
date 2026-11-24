@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { useState } from "react";
-import { createSession } from "@/api/client";
+import { createSession, getPromptAudioUrl } from "@/api/client";
 import { EndScreen } from "@/components/EndScreen";
 import { ErrorState } from "@/components/ErrorState";
 import { PromptCard, type Prompt } from "@/components/PromptCard";
@@ -97,6 +97,7 @@ function App() {
           <ResultsPanel
             attempt={attempt.attempt}
             targetText={prompt.vietnamese}
+            audioUrl={getPromptAudioUrl(prompt.id)}
             attemptNumber={promptAttempts.length}
             previousAttempts={previousAttempts}
             onTryAgain={attempt.reset}
