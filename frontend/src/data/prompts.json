@@ -1,62 +1,32 @@
 [
   {
-    "id": "p_001",
-    "vietnamese": "ma",
-    "english": "ghost",
-    "unit": "word"
+    "id": "pilot_001",
+    "vietnamese": "Xin chào",
+    "english": "Hello",
+    "unit": "phrase"
   },
   {
-    "id": "p_002",
-    "vietnamese": "má",
-    "english": "cheek",
-    "unit": "word"
+    "id": "pilot_002",
+    "vietnamese": "Bạn khỏe không?",
+    "english": "How are you?",
+    "unit": "sentence"
   },
   {
-    "id": "p_003",
-    "vietnamese": "mà",
-    "english": "but",
-    "unit": "word"
+    "id": "pilot_004",
+    "vietnamese": "Xin lỗi",
+    "english": "Sorry / Excuse me",
+    "unit": "phrase"
   },
   {
-    "id": "p_004",
-    "vietnamese": "mả",
-    "english": "tomb",
-    "unit": "word"
+    "id": "pilot_010",
+    "vietnamese": "Ôi giời ơi",
+    "english": "Oh my goodness",
+    "unit": "phrase"
   },
   {
-    "id": "p_005",
-    "vietnamese": "mã",
-    "english": "horse",
-    "unit": "word"
-  },
-  {
-    "id": "p_006",
-    "vietnamese": "mạ",
-    "english": "rice seedling",
-    "unit": "word"
-  },
-  {
-    "id": "p_007",
-    "vietnamese": "phở",
-    "english": "pho noodle soup",
-    "unit": "word"
-  },
-  {
-    "id": "p_008",
-    "vietnamese": "cơm",
-    "english": "cooked rice",
-    "unit": "word"
-  },
-  {
-    "id": "p_009",
-    "vietnamese": "giá",
-    "english": "price",
-    "unit": "word"
-  },
-  {
-    "id": "p_010",
-    "vietnamese": "chào",
-    "english": "hello",
-    "unit": "word"
+    "id": "pilot_011",
+    "vietnamese": "Đúng rồi",
+    "english": "That's right",
+    "unit": "phrase"
   }
 ]
